@@ -10,7 +10,7 @@ const Layout = () => {
           <h1 className="text-2xl font-bold text-white">Flash Cards</h1>
         </Link>
       </header>
-      <main className="p-2 flex flex-col items-center justify-center flex-1">
+      <main className="p-2 flex flex-col items-center flex-1">
         <Outlet />
       </main>
     </div>

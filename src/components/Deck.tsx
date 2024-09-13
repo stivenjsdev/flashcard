@@ -44,7 +44,7 @@ const Deck = () => {
   // };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto py-4">
       <div className="flex items-center justify-center mb-4 gap-1">
         {/* <button
           onClick={onBack}
