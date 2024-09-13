@@ -1,6 +1,6 @@
 import FlashCard from "@/components/FlashCard";
 import { Card } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FlashCardListProps = {
   cards: Card[];
@@ -9,24 +9,42 @@ type FlashCardListProps = {
 const FlashCardList = ({ cards }: FlashCardListProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"right" | "left" | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   const goToNext = () => {
     if (currentIndex < cards.length - 1) {
+      setIsVisible(false);
       setDirection("left");
-      setCurrentIndex(currentIndex + 1);
+      setTimeout(() => {
+        setCurrentIndex(currentIndex + 1);
+      }, 150);
     }
   };
 
   const goToPrevious = () => {
     if (currentIndex > 0) {
+      setIsVisible(false);
       setDirection("right");
-      setCurrentIndex(currentIndex - 1);
+      setTimeout(() => {
+        setCurrentIndex(currentIndex - 1);
+      }, 150);
     }
   };
 
+  useEffect(() => {
+    if (direction !== null) {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        setDirection(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, direction]);
+
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="relative overflow-hidden flex items-center justify-center">
+      {/* FlashCard */}
+      <div className="relative overflow-hidden flex items-center justify-center p-2">
         <div
           className={`transition-transform duration-300 ease-in-out ${
             direction === "left"
@@ -35,16 +53,20 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
               ? "translate-x-full"
               : ""
           }`}
-          onTransitionEnd={() => setDirection(null)}
         >
-          <FlashCard card={cards[currentIndex]} cardKey={currentIndex} />
+          <FlashCard
+            card={cards[currentIndex]}
+            cardKey={currentIndex}
+            isVisible={isVisible}
+          />
         </div>
       </div>
-      <div className="mt-4 flex justify-between items-center">
+      {/* Options menu */}
+      <div className="flex justify-between items-center">
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-blue-600 active:bg-blue-700 disabled:hover:bg-gray-300"
         >
           Anterior
         </button>
@@ -54,7 +76,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
         <button
           onClick={goToNext}
           disabled={currentIndex === cards.length - 1}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-blue-600 active:bg-blue-700 disabled:hover:bg-gray-300"
         >
           Siguiente
         </button>

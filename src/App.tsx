@@ -17,15 +17,19 @@ const cards = [
   {
     pregunta: "¿Cuál es el país más poblado del mundo?",
     respuesta: "China",
-  }
+  },
   // ... más tarjetas
 ];
 
 function App() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Mis Flashcards</h1>
-      <FlashCardList cards={cards} />
+    <div className="flex flex-col h-screen">
+      <header className="p-4 bg-blue-500">
+        <h1 className="text-2xl font-bold text-white">FlashCards</h1>
+      </header>
+      <main className="p-2 flex flex-col items-center justify-center flex-1">
+        <FlashCardList cards={cards} />
+      </main>
     </div>
   );
 }
