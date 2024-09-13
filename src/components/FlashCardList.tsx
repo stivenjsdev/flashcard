@@ -37,7 +37,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
           }`}
           onTransitionEnd={() => setDirection(null)}
         >
-          <FlashCard card={cards[currentIndex]} />
+          <FlashCard card={cards[currentIndex]} cardKey={currentIndex} />
         </div>
       </div>
       <div className="mt-4 flex justify-between items-center">
