@@ -1,12 +1,11 @@
 import { useDeck } from "@/hooks/useDeck";
 import { PlusCircle } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FlashCardList from "./FlashCardList";
 
 const Deck = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const {
     state: { decks },
