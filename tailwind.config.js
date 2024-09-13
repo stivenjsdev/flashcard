@@ -21,8 +21,7 @@ export default {
           normal: "#0D6986",
           dark: "#155167",
         },
-        quaternary: "#0d6986",
-        quinary: "#07485b",
+        quaternary: "#07485b",
         accent: {
           light: "#e7b852",
           normal: "#dba507",

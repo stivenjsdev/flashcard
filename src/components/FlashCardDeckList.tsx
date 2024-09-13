@@ -26,7 +26,7 @@ const FlashCardDeckList = () => {
 
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">FlashCards Decks</h2>
+      <h2 className="text-2xl font-bold mb-4 text-tertiary-normal">FlashCards Decks</h2>
       <form className="mb-4 flex" onSubmit={handleAddDeck}>
         <input
           type="text"
@@ -46,7 +46,7 @@ const FlashCardDeckList = () => {
         {decks.map((deck) => (
           <li
             key={deck.id}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+            className="px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
             onClick={() => handleSelectDeck(deck.id)}
           >
             {deck.name}

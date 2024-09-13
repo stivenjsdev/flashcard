@@ -46,7 +46,7 @@ const FlashCardDeck = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button> */}
-        <h2 className="text-2xl font-bold text-quaternary">{deck?.name}</h2>
+        <h2 className="text-2xl font-bold text-tertiary-normal">{deck?.name}</h2>
       </div>
       <form className="mb-4 space-y-2" onSubmit={handleAddCard}>
         <input

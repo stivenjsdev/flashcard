@@ -70,7 +70,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
         >
           Anterior
         </button>
-        <span className="text-lg font-semibold">
+        <span className="text-lg font-semibold text-tertiary-normal">
           {currentIndex + 1} / {cards.length}
         </span>
         <button
