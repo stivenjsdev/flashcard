@@ -7,6 +7,9 @@ Las tarjetas de estudio estimulan la memoria activa relacionando una pregunta qu
 
 Las tarjetas de papel suelen emplearse por las dos caras: en un lado la pregunta y en otro la respuesta. Por otra parte, en materias como el aprendizaje de vocabulario de otro idioma puede usarse en un doble sentido. Por ejemplo: español-inglés e inglés-español, según el lado por el que se haga las preguntas.
 
+# Deploy
+[flashcardst](https://flashcardst.netlify.app/)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
