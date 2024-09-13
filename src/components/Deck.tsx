@@ -1,11 +1,13 @@
 import { useDeck } from "@/hooks/useDeck";
 import { PlusCircle } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FlashCardList from "./FlashCardList";
 
-const FlashCardDeck = () => {
+const Deck = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     state: { decks },
     dispatch,
@@ -38,14 +40,18 @@ const FlashCardDeck = () => {
     }
   };
 
+  const onBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="flex items-center mb-4">
+      <div className="flex items-center justify-center mb-4 gap-1">
         {/* <button
           onClick={onBack}
-          className="mr-4 p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="w-4 h-4 mt-1 text-tertiary-normal" />
         </button> */}
         <h2 className="text-2xl font-bold text-tertiary-normal">
           {deck?.name}
@@ -86,4 +92,4 @@ const FlashCardDeck = () => {
   );
 };
 
-export default FlashCardDeck;
+export default Deck;

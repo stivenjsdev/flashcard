@@ -21,6 +21,10 @@ export type DeckActions =
   | {
       type: "UPDATE_DECK";
       payload: { updatedDeck: Deck };
+    }
+  | {
+      type: "REMOVE_DECK";
+      payload: { deckId: number };
     };
 
 export const deckReducer = (
@@ -38,6 +42,14 @@ export const deckReducer = (
     const updatedDecks = state.decks.map((deck) =>
       deck.id === updatedDeck.id ? updatedDeck : deck
     );
+    return {
+      ...state,
+      decks: updatedDecks,
+    };
+  }
+  if (action.type === "REMOVE_DECK") {
+    const deckId = action.payload.deckId;
+    const updatedDecks = state.decks.filter((deck) => deck.id !== deckId);
     return {
       ...state,
       decks: updatedDecks,

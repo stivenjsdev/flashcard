@@ -1,9 +1,9 @@
-import FlashCardDeckList from "@/components/FlashCardDeckList";
+import DeckList from "@/components/DeckList";
 
 const IndexPage = () => {
   return (
     <>
-      <FlashCardDeckList />
+      <DeckList />
     </>
   );
 };

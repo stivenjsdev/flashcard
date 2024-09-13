@@ -1,7 +1,7 @@
-import FlashCardDeck from "@/components/FlashCardDeck";
+import Deck from "@/components/Deck";
 
 const DeckPage = () => {
-  return <FlashCardDeck />;
+  return <Deck />;
 };
 
 export default DeckPage;

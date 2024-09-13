@@ -1,9 +1,9 @@
 import { useDeck } from "@/hooks/useDeck";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const FlashCardDeckList = () => {
+const DeckList = () => {
   const {
     state: { decks },
     dispatch,
@@ -22,6 +22,11 @@ const FlashCardDeckList = () => {
 
   const handleSelectDeck = (deckId: number) => {
     navigate(`/${deckId}`);
+  };
+
+  const handleRemoveDeck = (event: React.MouseEvent<HTMLButtonElement>, deckId: number) => {
+    event.stopPropagation();
+    dispatch({ type: "REMOVE_DECK", payload: { deckId} });
   };
 
   return (
@@ -46,10 +51,15 @@ const FlashCardDeckList = () => {
         {decks.map((deck) => (
           <li
             key={deck.id}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
+            className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
             onClick={() => handleSelectDeck(deck.id)}
           >
             {deck.name}
+            <div className="flex justify-center items-center">
+              <button onClick={(e) => handleRemoveDeck(e, deck.id)}>
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -57,4 +67,4 @@ const FlashCardDeckList = () => {
   );
 };
 
-export default FlashCardDeckList;
+export default DeckList;

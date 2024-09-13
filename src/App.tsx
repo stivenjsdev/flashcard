@@ -1,5 +1,5 @@
 import FlashCardList from "@/components/FlashCardList";
-import FlashCardDecks from "./components/FlashCardDeckList";
+import FlashCardDecks from "./components/DeckList";
 
 const cards = [
   {
