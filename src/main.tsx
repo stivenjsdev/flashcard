@@ -1,10 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import AppRouter from "@/router";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { DeckProvider } from "./context/DeckContext";
+import "./index.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <DeckProvider>
+      <AppRouter />
+    </DeckProvider>
+  </StrictMode>
+);

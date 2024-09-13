@@ -31,7 +31,7 @@ const FlashCard = ({ card, cardKey, isVisible }: FlashcardProps) => {
               isVisible ? "opacity-100" : "opacity-0"
             }`}
           >
-            {card.pregunta}
+            {card.question}
           </p>
         </div>
         <div className="absolute w-full h-full flex items-center justify-center p-4 text-center bg-yellow-100 border border-gray-200 rounded-lg shadow-md [backface-visibility:hidden] [transform:rotateY(180deg)]">
@@ -40,7 +40,7 @@ const FlashCard = ({ card, cardKey, isVisible }: FlashcardProps) => {
               isVisible ? "opacity-100" : "opacity-0"
             }`}
           >
-            {card.respuesta}
+            {card.answer}
           </p>
         </div>
       </div>

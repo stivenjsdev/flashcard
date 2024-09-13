@@ -1,22 +1,31 @@
 import FlashCardList from "@/components/FlashCardList";
+import FlashCardDecks from "./components/FlashCardDeckList";
 
 const cards = [
-  { pregunta: "¿Cuál es la capital de España?", respuesta: "Madrid" },
   {
-    pregunta: "¿Cuál es el océano más grande?",
-    respuesta: "El Océano Pacífico",
+    id: 1,
+    question: "¿Cuál es la capital de España?",
+    answer: "Madrid",
   },
   {
-    pregunta: "¿Cuál es el río más largo del mundo?",
-    respuesta: "El río Amazonas",
+    id: 2,
+    question: "¿Cuál es el océano más grande?",
+    answer: "El Océano Pacífico",
   },
   {
-    pregunta: "¿Cuál es el país más grande del mundo?",
-    respuesta: "Rusia",
+    id: 3,
+    question: "¿Cuál es el río más largo del mundo?",
+    answer: "El río Amazonas",
   },
   {
-    pregunta: "¿Cuál es el país más poblado del mundo?",
-    respuesta: "China",
+    id: 4,
+    question: "¿Cuál es el país más grande del mundo?",
+    answer: "Rusia",
+  },
+  {
+    id: 5,
+    question: "¿Cuál es el país más poblado del mundo?",
+    answer: "China",
   },
   // ... más tarjetas
 ];
@@ -28,6 +37,7 @@ function App() {
         <h1 className="text-2xl font-bold text-white">FlashCards</h1>
       </header>
       <main className="p-2 flex flex-col items-center justify-center flex-1">
+        <FlashCardDecks />
         <FlashCardList cards={cards} />
       </main>
     </div>

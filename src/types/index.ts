@@ -1,4 +1,11 @@
+export type Deck = {
+  id: number;
+  name: string;
+  cards: Card[];
+};
+
 export type Card = {
-  pregunta: string;
-  respuesta: string;
+  id: number;
+  question: string;
+  answer: string;
 };

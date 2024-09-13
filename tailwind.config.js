@@ -11,10 +11,18 @@ export default {
           dark: "#1e8c7e",
           darkest: "#1e6259",
         },
-        secondary: "#8ec7d2",
-        tertiary: "#8ec7d2",
-        Quaternary: "#0d6986",
-        Quinary: "#07485b",
+        secondary: {
+          light: "#a8d3dc",
+          normal: "#8ec7d2",
+          dark: "#6d979f",
+        },
+        tertiary: {
+          light: "#5388a0",
+          normal: "#0D6986",
+          dark: "#155167",
+        },
+        quaternary: "#0d6986",
+        quinary: "#07485b",
         accent: {
           light: "#e7b852",
           normal: "#dba507",
