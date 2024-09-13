@@ -42,9 +42,9 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
   }, [currentIndex, direction]);
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center gap-2">
       {/* FlashCard */}
-      <div className="relative overflow-hidden flex items-center justify-center p-2">
+      <div className="w-full relative overflow-hidden flex items-center justify-center p-2">
         <div
           className={`transition-transform duration-300 ease-in-out ${
             direction === "left"
@@ -62,7 +62,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
         </div>
       </div>
       {/* Options menu */}
-      <div className="flex justify-between items-center">
+      <div className="w-full flex justify-between items-center">
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
