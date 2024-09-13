@@ -40,9 +40,9 @@ const Deck = () => {
     }
   };
 
-  const onBack = () => {
-    navigate(-1);
-  };
+  // const onBack = () => {
+  //   navigate(-1);
+  // };
 
   return (
     <div className="w-full max-w-md mx-auto">
