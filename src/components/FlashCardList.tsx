@@ -66,7 +66,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-blue-600 active:bg-blue-700 disabled:hover:bg-gray-300"
+          className="px-4 py-2 bg-accent-normal text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-accent-dark active:bg-accent-darkest disabled:hover:bg-gray-300"
         >
           Anterior
         </button>
@@ -76,7 +76,7 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
         <button
           onClick={goToNext}
           disabled={currentIndex === cards.length - 1}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-blue-600 active:bg-blue-700 disabled:hover:bg-gray-300"
+          className="px-4 py-2 bg-accent-normal text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-accent-dark active:bg-accent-darkest disabled:hover:bg-gray-300"
         >
           Siguiente
         </button>

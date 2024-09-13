@@ -24,7 +24,7 @@ const cards = [
 function App() {
   return (
     <div className="flex flex-col h-screen">
-      <header className="p-4 bg-blue-500">
+      <header className="p-4 bg-primary-normal">
         <h1 className="text-2xl font-bold text-white">FlashCards</h1>
       </header>
       <main className="p-2 flex flex-col items-center justify-center flex-1">
