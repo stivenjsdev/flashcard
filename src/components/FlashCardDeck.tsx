@@ -17,7 +17,8 @@ const FlashCardDeck = () => {
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
 
-  const handleAddCard = () => {
+  const handleAddCard = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (newQuestion.trim() && newAnswer.trim()) {
       // const updatedCards = [...cards, { id: Date.now(), question: newQuestion.trim(), answer: newAnswer.trim() }]
       if (!deck) return;
@@ -46,7 +47,9 @@ const FlashCardDeck = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button> */}
-        <h2 className="text-2xl font-bold text-tertiary-normal">{deck?.name}</h2>
+        <h2 className="text-2xl font-bold text-tertiary-normal">
+          {deck?.name}
+        </h2>
       </div>
       <form className="mb-4 space-y-2" onSubmit={handleAddCard}>
         <input
