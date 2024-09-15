@@ -1,4 +1,5 @@
-import { useDeck } from "@/hooks/useDeck";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { selectDecks, update } from "@/store/slices/deckSlice";
 import { PlusCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -7,14 +8,14 @@ import FlashCardList from "./FlashCardList";
 const Deck = () => {
   const { id } = useParams();
 
-  const {
-    state: { decks },
-    dispatch,
-  } = useDeck();
+  const decks = useAppSelector(selectDecks);
+  const dispatch = useAppDispatch();
+
   const deck = useMemo(
     () => decks.find((deck) => deck.id === Number(id)),
     [decks, id]
   );
+
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
 
@@ -32,7 +33,7 @@ const Deck = () => {
         },
       ];
       const updatedDeck = { ...deck, cards: newCards };
-      dispatch({ type: "UPDATE_DECK", payload: { updatedDeck } });
+      dispatch(update({ updatedDeck }));
 
       setNewQuestion("");
       setNewAnswer("");

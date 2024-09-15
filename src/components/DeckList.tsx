@@ -1,13 +1,13 @@
-import { useDeck } from "@/hooks/useDeck";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { add, remove, selectDecks } from "@/store/slices/deckSlice";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeckList = () => {
-  const {
-    state: { decks },
-    dispatch,
-  } = useDeck();
+  const decks = useAppSelector(selectDecks);
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
   const [newDeckName, setNewDeckName] = useState("");
 
@@ -15,7 +15,7 @@ const DeckList = () => {
     event.preventDefault();
     if (newDeckName.trim()) {
       const newDeck = { id: Date.now(), name: newDeckName.trim(), cards: [] };
-      dispatch({ type: "ADD_DECK", payload: { newDeck } });
+      dispatch(add({ newDeck }));
       setNewDeckName("");
     }
   };
@@ -24,14 +24,19 @@ const DeckList = () => {
     navigate(`/${deckId}`);
   };
 
-  const handleRemoveDeck = (event: React.MouseEvent<HTMLButtonElement>, deckId: number) => {
+  const handleRemoveDeck = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    deckId: number
+  ) => {
     event.stopPropagation();
-    dispatch({ type: "REMOVE_DECK", payload: { deckId} });
+    dispatch(remove({ deckId }));
   };
 
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-tertiary-normal">FlashCards Decks</h2>
+      <h2 className="text-2xl font-bold mb-4 text-tertiary-normal">
+        FlashCards Decks
+      </h2>
       <form className="mb-4 flex" onSubmit={handleAddDeck}>
         <input
           type="text"
