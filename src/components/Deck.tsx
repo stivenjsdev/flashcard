@@ -126,7 +126,7 @@ const Deck = () => {
         onClick={handleSwapCard}
       >
         <RefreshCcw className="w-5 h-5 text-white mr-2" />
-        Intercambiar Pregunta y Respuesta
+        Intercambiar Preguntas y Respuestas
       </button>
 
       {/* FlashCardList */}
