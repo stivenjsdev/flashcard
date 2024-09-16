@@ -1,12 +1,14 @@
 import FlashCard from "@/components/FlashCard";
-import { Deck } from "@/types";
+import { Card, Deck } from "@/types";
+import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type FlashCardListProps = {
   cards: Deck["cards"];
+  handleEditCard: (card: Card) => void;
 };
 
-const FlashCardList = ({ cards }: FlashCardListProps) => {
+const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"right" | "left" | null>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -60,6 +62,9 @@ const FlashCardList = ({ cards }: FlashCardListProps) => {
             isVisible={isVisible}
           />
         </div>
+        <button className="absolute top-2 right-2 rounded-full bg-tertiary-normal p-2" onClick={() => handleEditCard(cards[currentIndex])}>
+          <Pencil className="w-5 h-5 text-white" />
+        </button>
       </div>
       {/* Options menu */}
       <div className="w-full flex justify-between items-center">

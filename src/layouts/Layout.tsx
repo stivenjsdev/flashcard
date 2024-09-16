@@ -14,7 +14,7 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <header className="p-4 bg-primary-normal flex flex-row gap-2">
+      <header className="p-4 bg-secondary-normal flex flex-row gap-2">
         <Link to="/" className="flex flex-row gap-1">
           <img src={logoCard} alt="logo" className="w-8" />
           <h1 className="text-2xl font-bold text-white">Flash Cards</h1>

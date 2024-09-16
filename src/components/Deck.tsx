@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { selectDecks, update } from "@/store/slices/deckSlice";
+import { addCard, selectDecks, updateCard } from "@/store/slices/deckSlice";
+import { Card } from "@/types";
 import { PlusCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -18,26 +19,49 @@ const Deck = () => {
 
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
+  const [editingCard, setEditingCard] = useState<Card | null>(null);
 
-  const handleAddCard = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (newQuestion.trim() && newAnswer.trim()) {
       // const updatedCards = [...cards, { id: Date.now(), question: newQuestion.trim(), answer: newAnswer.trim() }]
       if (!deck) return;
-      const newCards = [
-        ...deck.cards,
-        {
-          id: Date.now(),
-          question: newQuestion.trim(),
-          answer: newAnswer.trim(),
-        },
-      ];
-      const updatedDeck = { ...deck, cards: newCards };
-      dispatch(update({ updatedDeck }));
+      if (editingCard) {
+        // Update card
+        dispatch(
+          updateCard({
+            updatedCard: {
+              ...editingCard,
+              question: newQuestion,
+              answer: newAnswer,
+            },
+            deckId: deck.id,
+          })
+        );
+        setEditingCard(null);
+      } else {
+        // Add new card
+        dispatch(
+          addCard({
+            newCard: {
+              id: Date.now(),
+              question: newQuestion,
+              answer: newAnswer,
+            },
+            deckId: deck.id,
+          })
+        );
+      }
 
       setNewQuestion("");
       setNewAnswer("");
     }
+  };
+
+  const handleEditCard = (card: Card) => {
+    setEditingCard(card);
+    setNewQuestion(card.question);
+    setNewAnswer(card.answer);
   };
 
   // const onBack = () => {
@@ -57,7 +81,7 @@ const Deck = () => {
           {deck?.name}
         </h2>
       </div>
-      <form className="mb-4 space-y-2" onSubmit={handleAddCard}>
+      <form className="mb-4 space-y-2" onSubmit={handleSubmit}>
         <input
           type="text"
           value={newQuestion}
@@ -77,7 +101,7 @@ const Deck = () => {
           className="w-full px-4 py-2 bg-secondary-normal text-white rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 flex items-center justify-center"
         >
           <PlusCircle className="w-5 h-5 mr-2" />
-          Añadir Tarjeta
+          {editingCard ? "Actualizar" : "Añadir"} Tarjeta
         </button>
       </form>
       {/* FlashCardList */}
@@ -85,7 +109,7 @@ const Deck = () => {
         deck.cards.length === 0 ? (
           <p>No hay tarjetas</p>
         ) : (
-          <FlashCardList cards={deck.cards} />
+          <FlashCardList cards={deck.cards} handleEditCard={handleEditCard} />
         )
       ) : null}
     </div>

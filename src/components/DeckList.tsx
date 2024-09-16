@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { add, remove, selectDecks } from "@/store/slices/deckSlice";
+import { addDeck, removeDeck, selectDecks } from "@/store/slices/deckSlice";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +14,7 @@ const DeckList = () => {
   const handleAddDeck = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (newDeckName.trim()) {
-      const newDeck = { id: Date.now(), name: newDeckName.trim(), cards: [] };
-      dispatch(add({ newDeck }));
+      dispatch(addDeck({ name: newDeckName }));
       setNewDeckName("");
     }
   };
@@ -29,7 +28,7 @@ const DeckList = () => {
     deckId: number
   ) => {
     event.stopPropagation();
-    dispatch(remove({ deckId }));
+    dispatch(removeDeck({ deckId }));
   };
 
   return (

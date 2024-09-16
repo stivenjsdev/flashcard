@@ -1,5 +1,5 @@
 import type { RootState } from "@/store/store";
-import { Deck } from "@/types";
+import { Card, Deck } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // if use localStorage to store state
@@ -24,20 +24,14 @@ export const decksSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    add: (state, action: PayloadAction<{ newDeck: Deck }>) => {
-      state.value.push(action.payload.newDeck);
+    addDeck: (state, action: PayloadAction<{ name: string }>) => {
+      state.value.push({
+        id: Date.now(),
+        name: action.payload.name,
+        cards: [],
+      });
     },
-    update: (state, action: PayloadAction<{ updatedDeck: Deck }>) => {
-      const indexToUpdate = state.value.findIndex(
-        (deck) => deck.id === action.payload.updatedDeck.id
-      );
-      if (indexToUpdate === -1) {
-        console.error("Deck not found");
-        return;
-      }
-      state.value.splice(indexToUpdate, 1, action.payload.updatedDeck);
-    },
-    remove: (state, action: PayloadAction<{ deckId: number }>) => {
+    removeDeck: (state, action: PayloadAction<{ deckId: number }>) => {
       const indexToRemove = state.value.findIndex(
         (deck) => deck.id === action.payload.deckId
       );
@@ -47,11 +41,65 @@ export const decksSlice = createSlice({
       }
       state.value.splice(indexToRemove, 1);
     },
+    addCard: (
+      state,
+      action: PayloadAction<{ newCard: Card; deckId: number }>
+    ) => {
+      const deck = state.value.find(
+        (deck) => deck.id === action.payload.deckId
+      );
+      if (!deck) {
+        console.error("Deck not found");
+        return;
+      }
+      deck.cards.push(action.payload.newCard);
+    },
+    updateCard: (
+      state,
+      action: PayloadAction<{ updatedCard: Card; deckId: number }>
+    ) => {
+      const deck = state.value.find(
+        (deck) => deck.id === action.payload.deckId
+      );
+      if (!deck) {
+        console.error("Deck not found");
+        return;
+      }
+      const index = deck.cards.findIndex(
+        (card) => card.id === action.payload.updatedCard.id
+      );
+      if (index === -1) {
+        console.error("Card not found");
+        return;
+      }
+      deck.cards[index] = action.payload.updatedCard;
+    },
+    removeCard: (
+      state,
+      action: PayloadAction<{ cardId: number; deckId: number }>
+    ) => {
+      const deck = state.value.find(
+        (deck) => deck.id === action.payload.deckId
+      );
+      if (!deck) {
+        console.error("Deck not found");
+        return;
+      }
+      const index = deck.cards.findIndex(
+        (card) => card.id === action.payload.cardId
+      );
+      if (index === -1) {
+        console.error("Card not found");
+        return;
+      }
+      deck.cards.splice(index, 1);
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { add, remove, update } = decksSlice.actions;
+export const { addDeck, removeDeck, addCard, updateCard, removeCard } =
+  decksSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDecks = (state: RootState) => state.decks.value;
