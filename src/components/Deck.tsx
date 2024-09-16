@@ -1,7 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { addCard, selectDecks, updateCard } from "@/store/slices/deckSlice";
+import {
+  addCard,
+  selectDecks,
+  swapQuestionAndAnswer,
+  updateCard,
+} from "@/store/slices/deckSlice";
 import { Card } from "@/types";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, RefreshCcw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import FlashCardList from "./FlashCardList";
@@ -64,6 +69,16 @@ const Deck = () => {
     setNewAnswer(card.answer);
   };
 
+  const handleSwapCard = () => {
+    if (!deck) return;
+    if (editingCard) {
+      setEditingCard(null);
+      setNewQuestion("");
+      setNewAnswer("");
+    }
+    dispatch(swapQuestionAndAnswer({ deckId: deck.id }));
+  };
+
   // const onBack = () => {
   //   navigate(-1);
   // };
@@ -104,6 +119,16 @@ const Deck = () => {
           {editingCard ? "Actualizar" : "Añadir"} Tarjeta
         </button>
       </form>
+
+      {/* Swap Button */}
+      <button
+        className="w-full px-4 py-2 bg-accent-normal text-white rounded-md hover:bg-accent-dark focus:outline-none focus:ring-2 focus:ring-accent-normal focus:ring-offset-2 flex items-center justify-center mb-2"
+        onClick={handleSwapCard}
+      >
+        <RefreshCcw className="w-5 h-5 text-white mr-2" />
+        Intercambiar Pregunta y Respuesta
+      </button>
+
       {/* FlashCardList */}
       {deck ? (
         deck.cards.length === 0 ? (

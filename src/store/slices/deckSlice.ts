@@ -94,11 +94,24 @@ export const decksSlice = createSlice({
       }
       deck.cards.splice(index, 1);
     },
+    swapQuestionAndAnswer: (
+      state,
+      action: PayloadAction<{ deckId: number }>
+    ) => {
+      const deck = state.value.find((d) => d.id === action.payload.deckId);
+      if (deck) {
+        deck.cards = deck.cards.map((card) => ({
+          ...card,
+          answer: card.question,
+          question: card.answer,
+        }));
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addDeck, removeDeck, addCard, updateCard, removeCard } =
+export const { addDeck, removeDeck, addCard, updateCard, removeCard, swapQuestionAndAnswer } =
   decksSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
