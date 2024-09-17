@@ -15,10 +15,12 @@ const Layout = () => {
   return (
     <div className="flex flex-col h-screen">
       <header className="p-4 bg-secondary-normal flex flex-row gap-2">
-        <Link to="/" className="flex flex-row gap-1">
-          <img src={logoCard} alt="logo" className="w-8" />
-          <h1 className="text-2xl font-bold text-white">Flash Cards</h1>
-        </Link>
+        <div className="w-full max-w-md mx-auto">
+          <Link to="/" className="flex flex-row gap-1">
+            <img src={logoCard} alt="logo" className="w-8" />
+            <h1 className="text-2xl font-bold text-white">Flash Cards</h1>
+          </Link>
+        </div>
       </header>
       <main className="p-2 flex flex-col items-center flex-1">
         <Outlet />
