@@ -26,6 +26,9 @@ const Deck = () => {
   const [newAnswer, setNewAnswer] = useState("");
   const [editingCard, setEditingCard] = useState<Card | null>(null);
 
+  const [isRotating, setIsRotating] = useState(false);
+  const [isScaled, setIsScaled] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (newQuestion.trim() && newAnswer.trim()) {
@@ -64,6 +67,8 @@ const Deck = () => {
   };
 
   const handleEditCard = (card: Card) => {
+    setIsScaled(true);
+    setTimeout(() => setIsScaled(false), 300);
     setEditingCard(card);
     setNewQuestion(card.question);
     setNewAnswer(card.answer);
@@ -71,6 +76,8 @@ const Deck = () => {
 
   const handleSwapCard = () => {
     if (!deck) return;
+    setIsRotating(true);
+    setTimeout(() => setIsRotating(false), 1000);
     if (editingCard) {
       setEditingCard(null);
       setNewQuestion("");
@@ -96,7 +103,12 @@ const Deck = () => {
           {deck?.name}
         </h2>
       </div>
-      <form className="mb-4 space-y-2" onSubmit={handleSubmit}>
+      <form
+        className={`mb-4 space-y-2 transition-transform duration-300 ${
+          isScaled && "scale-90"
+        }`}
+        onSubmit={handleSubmit}
+      >
         <input
           type="text"
           value={newQuestion}
@@ -113,7 +125,7 @@ const Deck = () => {
         />
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-secondary-normal text-white rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 flex items-center justify-center"
+          className="w-full px-4 py-2 bg-secondary-normal text-white rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 flex items-center justify-center transform active:scale-95 transition-transform duration-300"
         >
           <PlusCircle className="w-5 h-5 mr-2" />
           {editingCard ? "Actualizar" : "Añadir"} Tarjeta
@@ -125,7 +137,11 @@ const Deck = () => {
         className="w-full px-4 py-2 bg-accent-normal text-white rounded-md hover:bg-accent-dark focus:outline-none focus:ring-2 focus:ring-accent-normal focus:ring-offset-2 flex items-center justify-center mb-2"
         onClick={handleSwapCard}
       >
-        <RefreshCcw className="w-5 h-5 text-white mr-2" />
+        <RefreshCcw
+          className={`w-5 h-5 text-white mr-2 transition-transform duration-1000 ${
+            isRotating ? "rotate-360" : ""
+          }`}
+        />
         Intercambiar Preguntas y Respuestas
       </button>
 

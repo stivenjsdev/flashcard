@@ -4,6 +4,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      rotate: {
+        360: "360deg",
+      },
       colors: {
         primary: {
           light: "#65c8b8",
