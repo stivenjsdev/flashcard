@@ -19,7 +19,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
       setDirection("left");
       setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
-      }, 150);
+      }, 120);
     }
   };
 
@@ -29,7 +29,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
       setDirection("right");
       setTimeout(() => {
         setCurrentIndex(currentIndex - 1);
-      }, 150);
+      }, 120);
     }
   };
 
@@ -38,7 +38,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
       const timer = setTimeout(() => {
         setIsVisible(true);
         setDirection(null);
-      }, 300);
+      }, 150);
       return () => clearTimeout(timer);
     }
   }, [currentIndex, direction]);
@@ -48,7 +48,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
       {/* FlashCard */}
       <div className="w-full relative overflow-hidden flex items-center justify-center p-2">
         <div
-          className={`transition-transform duration-300 ease-in-out ${
+          className={`transition-transform duration-150 ease-in-out ${
             direction === "left"
               ? "-translate-x-full"
               : direction === "right"
@@ -71,7 +71,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="px-4 py-2 bg-secondary-normal text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300"
+          className="px-4 py-2 bg-secondary-normal text-white rounded disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300"
         >
           Anterior
         </button>
@@ -81,7 +81,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
         <button
           onClick={goToNext}
           disabled={currentIndex === cards.length - 1}
-          className="px-4 py-2 bg-secondary-normal text-white rounded disabled:bg-gray-300 transition-all duration-200 ease-in-out hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300"
+          className="px-4 py-2 bg-secondary-normal text-white rounded disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300"
         >
           Siguiente
         </button>
