@@ -62,7 +62,7 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
             isVisible={isVisible}
           />
         </div>
-        <button className="absolute top-2 right-2 rounded-full bg-tertiary-normal p-2 transform active:scale-75 transition-transform duration-300" onClick={() => handleEditCard(cards[currentIndex])}>
+        <button className="absolute top-2 right-2 rounded-full bg-tertiary-normal p-3 transform active:scale-75 transition-transform duration-300" onClick={() => handleEditCard(cards[currentIndex])}>
           <Pencil className="w-5 h-5 text-white" />
         </button>
       </div>
