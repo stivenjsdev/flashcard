@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addDeck, removeDeck, selectDecks } from "@/store/slices/deckSlice";
 import { Deck } from "@/types";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Send, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const DeckList = () => {
   };
 
   const handleSelectDeck = (deckId: number) => {
-    navigate(`/${deckId}`);
+    navigate(`/deck/${deckId}`);
   };
 
   const handleRemoveDeck = (
@@ -53,6 +53,14 @@ const DeckList = () => {
   ) => {
     event.stopPropagation();
     dispatch(removeDeck({ deckId }));
+  };
+
+  const handleSendDeck = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    deckId: number
+  ) => {
+    event.stopPropagation();
+    navigate(`/export/${deckId}`);
   };
 
   return (
@@ -99,7 +107,10 @@ const DeckList = () => {
               <span>{deck.name}</span>
               <span className="text-xs">({deck.cards.length} Tarjetas)</span>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center gap-3">
+              <button onClick={(e) => handleSendDeck(e, deck.id)}>
+                <Send className="w-5 h-5" />
+              </button>
               <button onClick={(e) => handleRemoveDeck(e, deck.id)}>
                 <Trash2 className="w-5 h-5" />
               </button>

@@ -15,6 +15,7 @@ export default {
           darkest: "#1e6259",
         },
         secondary: {
+          lightest: "#cee6eb",
           light: "#a8d3dc",
           normal: "#8ec7d2",
           dark: "#6d979f",

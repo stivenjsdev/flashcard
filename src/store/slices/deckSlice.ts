@@ -31,6 +31,9 @@ export const decksSlice = createSlice({
         cards: [],
       });
     },
+    importDeck: (state, action: PayloadAction<{ deck: Deck }>) => {
+      state.value.push(action.payload.deck);
+    },
     removeDeck: (state, action: PayloadAction<{ deckId: number }>) => {
       const indexToRemove = state.value.findIndex(
         (deck) => deck.id === action.payload.deckId
@@ -111,8 +114,15 @@ export const decksSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addDeck, removeDeck, addCard, updateCard, removeCard, swapQuestionAndAnswer } =
-  decksSlice.actions;
+export const {
+  addDeck,
+  importDeck,
+  removeDeck,
+  addCard,
+  updateCard,
+  removeCard,
+  swapQuestionAndAnswer,
+} = decksSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDecks = (state: RootState) => state.decks.value;
