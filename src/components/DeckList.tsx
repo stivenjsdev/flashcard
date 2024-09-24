@@ -1,7 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addDeck, removeDeck, selectDecks } from "@/store/slices/deckSlice";
+import { Deck } from "@/types";
 import { PlusCircle, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeckList = () => {
@@ -10,6 +11,29 @@ const DeckList = () => {
 
   const navigate = useNavigate();
   const [newDeckName, setNewDeckName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filterDecks = (term: string, decks: Deck[]) => {
+    console.log("filterDecks", term);
+    return decks.filter((deck) => {
+      const matchInDeckName = deck.name
+        .toLowerCase()
+        .includes(term.toLowerCase());
+      const matchInFlashcards = deck.cards.some(
+        (card) =>
+          card.question.toLowerCase().includes(term.toLowerCase()) ||
+          card.answer.toLowerCase().includes(term.toLowerCase())
+      );
+      console.log(matchInDeckName);
+      console.log(matchInFlashcards);
+      return matchInDeckName || matchInFlashcards;
+    });
+  };
+
+  const filteredDecks = useMemo(
+    () => filterDecks(searchTerm, decks),
+    [searchTerm, decks]
+  );
 
   const handleAddDeck = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,11 +56,13 @@ const DeckList = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-tertiary-normal">
+    <div className="w-full max-w-md mx-auto p-4 space-y-4">
+      <h2 className="text-2xl font-bold text-tertiary-normal">
         FlashCards Decks
       </h2>
-      <form className="mb-4 flex" onSubmit={handleAddDeck}>
+
+      {/* Create deck form */}
+      <form className="flex" onSubmit={handleAddDeck}>
         <input
           type="text"
           value={newDeckName}
@@ -51,8 +77,19 @@ const DeckList = () => {
           <PlusCircle className="w-5 h-5" />
         </button>
       </form>
+
+      {/* Search input */}
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Buscar..."
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
+      />
+
+      {/* Deck list */}
       <ul className="space-y-2">
-        {decks.map((deck) => (
+        {filteredDecks.map((deck) => (
           <li
             key={deck.id}
             className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
