@@ -95,7 +95,10 @@ const DeckList = () => {
             className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
             onClick={() => handleSelectDeck(deck.id)}
           >
-            {deck.name}
+            <div className="flex flex-col">
+              <span>{deck.name}</span>
+              <span className="text-xs">({deck.cards.length} Tarjetas)</span>
+            </div>
             <div className="flex justify-center items-center">
               <button onClick={(e) => handleRemoveDeck(e, deck.id)}>
                 <Trash2 className="w-5 h-5" />
