@@ -32,7 +32,14 @@ export const decksSlice = createSlice({
       });
     },
     importDeck: (state, action: PayloadAction<{ deck: Deck }>) => {
-      state.value.push(action.payload.deck);
+      const index = state.value.findIndex(deck => deck.id === action.payload.deck.id);
+      if (index === -1) {
+        // Add deck if not found
+        state.value.push(action.payload.deck);
+      } else {
+        // Update deck if found
+        state.value[index] = action.payload.deck;
+      }
     },
     removeDeck: (state, action: PayloadAction<{ deckId: number }>) => {
       const indexToRemove = state.value.findIndex(
