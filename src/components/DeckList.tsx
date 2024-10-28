@@ -1,39 +1,46 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addDeck, removeDeck, selectDecks } from "@/store/slices/deckSlice";
-import { Deck } from "@/types";
-import { PlusCircle, Send, Trash2 } from "lucide-react";
+import { Card, Deck } from "@/types";
+import { PlusCircle, Send, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const DeckList = () => {
+export default function Component() {
   const decks = useAppSelector(selectDecks);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
   const [newDeckName, setNewDeckName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [matchingCards, setMatchingCards] = useState<
+    { deckId: number; cards: Card[] }[]
+  >([]);
 
   const filterDecks = (term: string, decks: Deck[]) => {
-    console.log("filterDecks", term);
-    return decks.filter((deck) => {
+    const filteredDecks = decks.filter((deck) => {
       const matchInDeckName = deck.name
         .toLowerCase()
-        .includes(term.toLowerCase());
-      const matchInFlashcards = deck.cards.some(
+        .includes(term.toLowerCase().trim());
+      const matchingCardsInDeck = deck.cards.filter(
         (card) =>
-          card.question.toLowerCase().includes(term.toLowerCase()) ||
-          card.answer.toLowerCase().includes(term.toLowerCase())
+          card.question.toLowerCase().includes(term.toLowerCase().trim()) ||
+          card.answer.toLowerCase().includes(term.toLowerCase().trim())
       );
-      console.log(matchInDeckName);
-      console.log(matchInFlashcards);
-      return matchInDeckName || matchInFlashcards;
+      if (matchingCardsInDeck.length > 0) {
+        setMatchingCards((prev) => [
+          ...prev,
+          { deckId: deck.id, cards: matchingCardsInDeck },
+        ]);
+      }
+      return matchInDeckName || matchingCardsInDeck.length > 0;
     });
+    return filteredDecks;
   };
 
-  const filteredDecks = useMemo(
-    () => filterDecks(searchTerm, decks),
-    [searchTerm, decks]
-  );
+  const filteredDecks = useMemo(() => {
+    setMatchingCards([]);
+    return filterDecks(searchTerm, decks);
+  }, [searchTerm, decks]);
 
   const handleAddDeck = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,13 +70,17 @@ const DeckList = () => {
     navigate(`/export/${deckId}`);
   };
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    setMatchingCards([]);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
       <h2 className="text-2xl font-bold text-tertiary-normal">
         FlashCards Decks
       </h2>
 
-      {/* Create deck form */}
       <form className="flex" onSubmit={handleAddDeck}>
         <input
           type="text"
@@ -80,22 +91,31 @@ const DeckList = () => {
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-secondary-normal text-white rounded-r-md hover:bg-secondary-dark  focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2"
+          className="px-4 py-2 bg-secondary-normal text-white rounded-r-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2"
         >
           <PlusCircle className="w-5 h-5" />
         </button>
       </form>
 
-      {/* Search input */}
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Buscar..."
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
-      />
+      <div className="relative">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar..."
+          className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
+        />
+        {searchTerm && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            aria-label="Limpiar búsqueda"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+      </div>
 
-      {/* Deck list */}
       <ul className="space-y-2">
         {filteredDecks.map((deck) => (
           <li
@@ -118,8 +138,32 @@ const DeckList = () => {
           </li>
         ))}
       </ul>
+
+      {searchTerm.trim() !== "" && matchingCards.length > 0 && (
+        <div className="mt-4 space-y-4">
+          <h3 className="text-xl font-semibold text-tertiary-normal">
+            Tarjetas coincidentes
+          </h3>
+          {matchingCards.map(({ deckId, cards }) => (
+            <div
+              key={deckId}
+              className="bg-white border border-gray-200 rounded-md shadow-sm p-4"
+            >
+              <h4 className="font-medium text-tertiary-normal mb-2">
+                {decks.find((deck) => deck.id === deckId)?.name}
+              </h4>
+              <ul className="space-y-2">
+                {cards.map((card, index) => (
+                  <li key={index} className="bg-gray-50 p-2 rounded">
+                    <p className="font-medium">P: {card.question}</p>
+                    <p className="text-sm text-gray-600">R: {card.answer}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-};
-
-export default DeckList;
+}
