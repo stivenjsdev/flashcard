@@ -19,7 +19,7 @@ const FlashCard = ({ card, cardKey, isVisible }: FlashcardProps) => {
   }, [cardKey]);
 
   return (
-    <div className="w-80 h-52 [perspective:1000px]" onClick={handleClick}>
+    <div className="w-64 h-52 [perspective:1000px]" onClick={handleClick}>
       <div
         className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
           isFlipped ? "[transform:rotateY(180deg)]" : ""

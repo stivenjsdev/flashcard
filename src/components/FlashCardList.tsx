@@ -44,13 +44,23 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
   }, [currentIndex, direction]);
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col items-center gap-2">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center gap-2 py-2">
+      {/* Edit Button */}
+      <button
+        className="w-full px-4 py-2 text-white rounded-md bg-tertiary-normal transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2 flex items-center justify-center"
+        onClick={() => handleEditCard(cards[currentIndex])}
+        aria-label="Editar tarjeta"
+      >
+        <Pencil className="w-5 h-5 text-white mr-2" />
+        Editar Tarjeta
+      </button>
+
       <div className="w-full relative flex items-center justify-center">
         {/* Previous button */}
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="absolute left-0 z-10 p-2 bg-secondary-normal text-white rounded-full disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2"
+          className="absolute left-0 z-10 w-7 h-52 rounded-lg flex items-center justify-center bg-secondary-normal text-white disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 transition-colors duration-200"
           aria-label="Anterior"
         >
           <ChevronLeft className="w-6 h-6" />
@@ -73,20 +83,13 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
               isVisible={isVisible}
             />
           </div>
-          <button
-            className="absolute top-2 right-2 rounded-full bg-tertiary-normal p-3 transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2"
-            onClick={() => handleEditCard(cards[currentIndex])}
-            aria-label="Editar tarjeta"
-          >
-            <Pencil className="w-5 h-5 text-white" />
-          </button>
         </div>
 
         {/* Next button */}
         <button
           onClick={goToNext}
           disabled={currentIndex === cards.length - 1}
-          className="absolute right-0 z-10 p-2 bg-secondary-normal text-white rounded-full disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2"
+          className="absolute right-0 z-10 w-7 h-52 rounded-lg flex items-center justify-center bg-secondary-normal text-white disabled:bg-gray-300 hover:bg-secondary-dark active:bg-secondary-darkest disabled:hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 transition-colors duration-200"
           aria-label="Siguiente"
         >
           <ChevronRight className="w-6 h-6" />
