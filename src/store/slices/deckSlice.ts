@@ -9,9 +9,9 @@ const localStorageDeck = (): Deck[] => {
 };
 
 // Define a type for the slice state
-interface DecksState {
+type DecksState = {
   value: Deck[];
-}
+};
 
 // Define the initial state using that type
 const initialState: DecksState = {
@@ -32,7 +32,9 @@ export const decksSlice = createSlice({
       });
     },
     importDeck: (state, action: PayloadAction<{ deck: Deck }>) => {
-      const index = state.value.findIndex(deck => deck.id === action.payload.deck.id);
+      const index = state.value.findIndex(
+        (deck) => deck.id === action.payload.deck.id
+      );
       if (index === -1) {
         // Add deck if not found
         state.value.push(action.payload.deck);
