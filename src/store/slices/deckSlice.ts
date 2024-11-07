@@ -120,10 +120,21 @@ export const decksSlice = createSlice({
       }
       deck.cards.splice(index, 1);
     },
+    // Swap question and answer of all cards in a any deck
     swapQuestionAndAnswer: (
       state,
       action: PayloadAction<{ deckId: number }>
     ) => {
+      // validate if deck is favorite deck
+      if (state.favorites.id === action.payload.deckId) {
+        state.favorites.cards = state.favorites.cards.map((card) => ({
+          ...card,
+          answer: card.question,
+          question: card.answer,
+        }));
+        return;
+      }
+      // normal deck
       const deck = state.value.find((d) => d.id === action.payload.deckId);
       if (deck) {
         deck.cards = deck.cards.map((card) => ({
