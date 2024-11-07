@@ -1,12 +1,19 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { addDeck, removeDeck, selectDecks } from "@/store/slices/deckSlice";
+import {
+  addDeck,
+  clearFavorites,
+  removeDeck,
+  selectDecks,
+  selectFavorites,
+} from "@/store/slices/deckSlice";
 import { Card, Deck } from "@/types";
-import { PlusCircle, Send, Trash2, X } from "lucide-react";
+import { PlusCircle, Send, Trash, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Component() {
   const decks = useAppSelector(selectDecks);
+  const favorites = useAppSelector(selectFavorites);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -70,6 +77,11 @@ export default function Component() {
     navigate(`/export/${deckId}`);
   };
 
+  const handleClearFavorites = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    dispatch(clearFavorites());
+  };
+
   const clearSearch = () => {
     setSearchTerm("");
     setMatchingCards([]);
@@ -77,10 +89,7 @@ export default function Component() {
 
   return (
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
-      <h2 className="text-2xl font-bold text-tertiary-normal">
-        FlashCards Decks
-      </h2>
-
+      {/* Add Deck Form  */}
       <form className="flex" onSubmit={handleAddDeck}>
         <input
           type="text"
@@ -97,6 +106,7 @@ export default function Component() {
         </button>
       </form>
 
+      {/* Search Input */}
       <div className="relative">
         <input
           type="text"
@@ -116,6 +126,34 @@ export default function Component() {
         )}
       </div>
 
+      {/* Favorites Deck */}
+      {favorites.cards.length > -1 && ( // todo: change to 0
+        <>
+          <h2 className="text-2xl font-bold text-tertiary-normal">Favorites</h2>
+          <div
+            key={favorites.id}
+            className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
+            onClick={() => handleSelectDeck(favorites.id)}
+          >
+            <div className="flex flex-col">
+              <span>{favorites.name}</span>
+              <span className="text-xs">
+                ({favorites.cards.length} Tarjetas)
+              </span>
+            </div>
+            <div className="flex justify-center items-center gap-3">
+              <button onClick={handleClearFavorites}>
+                <Trash className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Deck List */}
+      <h2 className="text-2xl font-bold text-tertiary-normal">
+        Flash Cards Decks
+      </h2>
       <ul className="space-y-2">
         {filteredDecks.map((deck) => (
           <li

@@ -1,16 +1,20 @@
 import logoCard from "@/assets/logocard.svg";
 import { useAppSelector } from "@/hooks/hooks";
-import { selectDecks } from "@/store/slices/deckSlice";
+import { selectDecks, selectFavorites } from "@/store/slices/deckSlice";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 const Layout = () => {
-
   const decks = useAppSelector(selectDecks);
+  const favorites = useAppSelector(selectFavorites);
 
   useEffect(() => {
     localStorage.setItem("flashcardDecks", JSON.stringify(decks));
   }, [decks]);
+
+  useEffect(() => {
+    localStorage.setItem("favoritesDeck", JSON.stringify(favorites));
+  }, [favorites]);
 
   return (
     <div className="flex flex-col h-screen">

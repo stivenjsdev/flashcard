@@ -18,6 +18,8 @@ const FlashCard = ({ card, cardKey, isVisible }: FlashcardProps) => {
     setIsFlipped(false);
   }, [cardKey]);
 
+  if (!card) return null;
+
   return (
     <div className="w-72 h-52 [perspective:1000px]" onClick={handleClick}>
       <div

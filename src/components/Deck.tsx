@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import {
   addCard,
+  addToFavorites,
+  removeFromFavorites,
   selectDecks,
+  selectFavorites,
   swapQuestionAndAnswer,
   updateCard,
 } from "@/store/slices/deckSlice";
@@ -13,13 +16,17 @@ import FlashCardList from "./FlashCardList";
 
 const Deck = () => {
   const { id } = useParams();
+  const isFavorites = useMemo(() => Number(id) === 0, [id]);
 
   const decks = useAppSelector(selectDecks);
+  const favorites = useAppSelector(selectFavorites);
   const dispatch = useAppDispatch();
 
   const deck = useMemo(
-    () => decks.find((deck) => deck.id === Number(id)),
-    [decks, id]
+    () =>
+      isFavorites ? favorites : decks.find((deck) => deck.id === Number(id)),
+
+    [decks, id, isFavorites, favorites]
   );
 
   const [newQuestion, setNewQuestion] = useState("");
@@ -74,6 +81,16 @@ const Deck = () => {
     setNewAnswer(card.answer);
   };
 
+  const handleRemoveFromFavorites = (cardId: Card["id"]) => {
+    if (!deck) return;
+    dispatch(removeFromFavorites({ cardId }));
+  };
+
+  const handleAddToFavorites = (card: Card) => {
+    if (!deck) return;
+    dispatch(addToFavorites({ card }));
+  };
+
   const handleSwapCard = () => {
     if (!deck) return;
     setIsRotating(true);
@@ -92,6 +109,7 @@ const Deck = () => {
 
   return (
     <div className="w-full max-w-md mx-auto py-4">
+      {/* Deck Name */}
       <div className="flex items-center justify-center mb-4 gap-1">
         {/* <button
           onClick={onBack}
@@ -103,34 +121,38 @@ const Deck = () => {
           {deck?.name}
         </h2>
       </div>
-      <form
-        className={`mb-4 space-y-2 transition-transform duration-300 ${
-          isScaled && "scale-90"
-        }`}
-        onSubmit={handleSubmit}
-      >
-        <input
-          type="text"
-          value={newQuestion}
-          onChange={(e) => setNewQuestion(e.target.value)}
-          placeholder="Nueva pregunta"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
-        />
-        <input
-          type="text"
-          value={newAnswer}
-          onChange={(e) => setNewAnswer(e.target.value)}
-          placeholder="Nueva respuesta"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
-        />
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-secondary-normal text-white rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 flex items-center justify-center transform active:scale-95 transition-transform duration-300"
+
+      {/* Add Card Form */}
+      {!isFavorites && (
+        <form
+          className={`mb-4 space-y-2 transition-transform duration-300 ${
+            isScaled && "scale-90"
+          }`}
+          onSubmit={handleSubmit}
         >
-          <PlusCircle className="w-5 h-5 mr-2" />
-          {editingCard ? "Actualizar" : "Añadir"} Tarjeta
-        </button>
-      </form>
+          <input
+            type="text"
+            value={newQuestion}
+            onChange={(e) => setNewQuestion(e.target.value)}
+            placeholder="Nueva pregunta"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
+          />
+          <input
+            type="text"
+            value={newAnswer}
+            onChange={(e) => setNewAnswer(e.target.value)}
+            placeholder="Nueva respuesta"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-normal"
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-secondary-normal text-white rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary-normal focus:ring-offset-2 flex items-center justify-center transform active:scale-95 transition-transform duration-300"
+          >
+            <PlusCircle className="w-5 h-5 mr-2" />
+            {editingCard ? "Actualizar" : "Añadir"} Tarjeta
+          </button>
+        </form>
+      )}
 
       {/* Swap Button */}
       <button
@@ -150,7 +172,13 @@ const Deck = () => {
         deck.cards.length === 0 ? (
           <p>No hay tarjetas</p>
         ) : (
-          <FlashCardList cards={deck.cards} handleEditCard={handleEditCard} />
+          <FlashCardList
+            cards={deck.cards}
+            handleEditCard={handleEditCard}
+            isFavorites={isFavorites}
+            handleRemoveFromFavorites={handleRemoveFromFavorites}
+            handleAddToFavorites={handleAddToFavorites}
+          />
         )
       ) : null}
     </div>

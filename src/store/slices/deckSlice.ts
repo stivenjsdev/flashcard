@@ -7,14 +7,26 @@ const localStorageDeck = (): Deck[] => {
   const decks = localStorage.getItem("flashcardDecks");
   return decks ? JSON.parse(decks) : [];
 };
+const localStorageFavorites = (): Deck => {
+  const favorites = localStorage.getItem("favoritesDeck");
+  return favorites
+    ? JSON.parse(favorites)
+    : {
+        id: 0,
+        name: "Favorites",
+        cards: [],
+      };
+};
 
 // Define a type for the slice state
 type DecksState = {
+  favorites: Deck;
   value: Deck[];
 };
 
 // Define the initial state using that type
 const initialState: DecksState = {
+  favorites: localStorageFavorites(),
   value: localStorageDeck(),
 };
 
@@ -24,6 +36,7 @@ export const decksSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
+    // Deck Reducers
     addDeck: (state, action: PayloadAction<{ name: string }>) => {
       state.value.push({
         id: Date.now(),
@@ -53,6 +66,7 @@ export const decksSlice = createSlice({
       }
       state.value.splice(indexToRemove, 1);
     },
+    // FlashCard Reducers
     addCard: (
       state,
       action: PayloadAction<{ newCard: Card; deckId: number }>
@@ -119,6 +133,32 @@ export const decksSlice = createSlice({
         }));
       }
     },
+    // Favorites Reducers
+    addToFavorites: (state, action: PayloadAction<{ card: Card }>) => {
+      // validate if card is already in favorites
+      const index = state.favorites.cards.findIndex(
+        (card) => card.id === action.payload.card.id
+      );
+      if (index !== -1) {
+        console.error("Card already in favorites");
+        return;
+      }
+      state.favorites.cards.push(action.payload.card);
+    },
+    clearFavorites: (state) => {
+      state.favorites.cards = [];
+    },
+    removeFromFavorites: (state, action: PayloadAction<{ cardId: number }>) => {
+      const cardId = action.payload.cardId;
+      const index = state.favorites.cards.findIndex(
+        (card) => card.id === cardId
+      );
+      if (index === -1) {
+        console.error("Card not found");
+        return;
+      }
+      state.favorites.cards.splice(index, 1);
+    },
   },
 });
 
@@ -131,9 +171,13 @@ export const {
   updateCard,
   removeCard,
   swapQuestionAndAnswer,
+  addToFavorites,
+  removeFromFavorites,
+  clearFavorites,
 } = decksSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDecks = (state: RootState) => state.decks.value;
+export const selectFavorites = (state: RootState) => state.decks.favorites;
 
 export const decksReducer = decksSlice.reducer;

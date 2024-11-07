@@ -1,14 +1,23 @@
 import FlashCard from "@/components/FlashCard";
 import { Card, Deck } from "@/types";
-import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Star, StarOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type FlashCardListProps = {
+  isFavorites: boolean;
   cards: Deck["cards"];
   handleEditCard: (card: Card) => void;
+  handleRemoveFromFavorites: (cardId: Card["id"]) => void;
+  handleAddToFavorites: (card: Card) => void;
 };
 
-const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
+const FlashCardList = ({
+  cards,
+  handleEditCard,
+  handleRemoveFromFavorites,
+  handleAddToFavorites,
+  isFavorites,
+}: FlashCardListProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"right" | "left" | null>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -43,18 +52,47 @@ const FlashCardList = ({ cards, handleEditCard }: FlashCardListProps) => {
     }
   }, [currentIndex, direction]);
 
+  const handleRemove = (cardId: Card["id"]) => {
+    handleRemoveFromFavorites(cardId);
+    if (currentIndex === cards.length - 1) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center gap-2 py-2">
-      {/* Edit Button */}
-      <button
-        className="w-full px-4 py-2 text-white rounded-md bg-tertiary-normal transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2 flex items-center justify-center"
-        onClick={() => handleEditCard(cards[currentIndex])}
-        aria-label="Editar tarjeta"
-      >
-        <Pencil className="w-5 h-5 text-white mr-2" />
-        Editar Tarjeta
-      </button>
+      {/* Remove from Favorites or Edit Button with Add to Favorites */}
+      {isFavorites ? (
+        <button
+          className="w-full px-4 py-2 text-white rounded-md bg-tertiary-normal transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2 flex items-center justify-center"
+          onClick={() => handleRemove(cards[currentIndex].id)}
+          aria-label="Editar tarjeta"
+        >
+          <StarOff className="w-5 h-5 text-white mr-2" />
+          Eliminar de Favoritos
+        </button>
+      ) : (
+        <>
+          <button
+            className="w-full px-4 py-2 text-white rounded-md bg-tertiary-normal transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2 flex items-center justify-center"
+            onClick={() => handleEditCard(cards[currentIndex])}
+            aria-label="Editar tarjeta"
+          >
+            <Pencil className="w-5 h-5 text-white mr-2" />
+            Editar Tarjeta
+          </button>
+          <button
+            className="w-full px-4 py-2 text-white rounded-md bg-primary-normal transform active:scale-75 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-tertiary-normal focus:ring-offset-2 flex items-center justify-center"
+            onClick={() => handleAddToFavorites(cards[currentIndex])}
+            aria-label="Editar tarjeta"
+          >
+            <Star className="w-5 h-5 text-white mr-2" />
+            Agregar a Favoritos
+          </button>
+        </>
+      )}
 
+      {/* FlashCard Container */}
       <div className="w-full relative flex items-center justify-center">
         {/* Previous button */}
         <button
