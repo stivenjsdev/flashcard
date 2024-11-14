@@ -47,7 +47,7 @@ export default function Component() {
       activationConstraint: { delay: 500, tolerance: 5 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: 500, tolerance: 5 },
+      activationConstraint: { delay: 250, tolerance: 5 },
     })
   );
 
