@@ -5,11 +5,29 @@ import {
   removeDeck,
   selectDecks,
   selectFavorites,
+  updateDeckOrder,
 } from "@/store/slices/deckSlice";
 import { Card, Deck } from "@/types";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { PlusCircle, Send, Trash, Trash2, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SortableDeckItem from "./SortableDeckItem";
 
 export default function Component() {
   const decks = useAppSelector(selectDecks);
@@ -22,6 +40,41 @@ export default function Component() {
   const [matchingCards, setMatchingCards] = useState<
     { deckId: number; cards: Card[] }[]
   >([]);
+
+  const [activeId, setActiveId] = useState<string | number | null>(null);
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { delay: 500, tolerance: 5 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 500, tolerance: 5 },
+    })
+  );
+
+  const activeDeck = useMemo(
+    () => decks.find((deck) => deck.id === activeId),
+    [decks, activeId]
+  );
+
+  useEffect(() => {
+    setMatchingCards([]);
+    filterDecks(searchTerm, decks);
+  }, [searchTerm, decks]);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null); // Resetea el id activo después del arrastre
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = decks.findIndex((deck) => deck.id === active.id);
+      const newIndex = decks.findIndex((deck) => deck.id === over.id);
+      const newDecks = arrayMove(decks, oldIndex, newIndex);
+      dispatch(updateDeckOrder({ orderedDeck: newDecks })); // Actualiza el orden de los decks en el estado
+    }
+  };
 
   const filterDecks = (term: string, decks: Deck[]) => {
     const filteredDecks = decks.filter((deck) => {
@@ -43,11 +96,6 @@ export default function Component() {
     });
     return filteredDecks;
   };
-
-  const filteredDecks = useMemo(() => {
-    setMatchingCards([]);
-    return filterDecks(searchTerm, decks);
-  }, [searchTerm, decks]);
 
   const handleAddDeck = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -150,37 +198,11 @@ export default function Component() {
         </>
       )}
 
-      {/* Deck List */}
-      <h2 className="text-2xl font-bold text-tertiary-normal">
-        Flash Cards Decks
-      </h2>
-      <ul className="space-y-2">
-        {filteredDecks.map((deck) => (
-          <li
-            key={deck.id}
-            className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal"
-            onClick={() => handleSelectDeck(deck.id)}
-          >
-            <div className="flex flex-col">
-              <span>{deck.name}</span>
-              <span className="text-xs">({deck.cards.length} Tarjetas)</span>
-            </div>
-            <div className="flex justify-center items-center gap-3">
-              <button onClick={(e) => handleSendDeck(e, deck.id)}>
-                <Send className="w-5 h-5" />
-              </button>
-              <button onClick={(e) => handleRemoveDeck(e, deck.id)}>
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-
+      {/* Matching Cards */}
       {searchTerm.trim() !== "" && matchingCards.length > 0 && (
         <div className="mt-4 space-y-4">
-          <h3 className="text-xl font-semibold text-tertiary-normal">
-            Tarjetas coincidentes
+          <h3 className="text-2xl font-bold text-tertiary-normal">
+            Tarjetas Coincidentes
           </h3>
           {matchingCards.map(({ deckId, cards }) => (
             <div
@@ -202,6 +224,52 @@ export default function Component() {
           ))}
         </div>
       )}
+
+      {/* Deck List */}
+      <h2 className="text-2xl font-bold text-tertiary-normal">
+        Flash Cards Decks
+      </h2>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={decks} strategy={verticalListSortingStrategy}>
+          <ul className="space-y-2">
+            {decks.map((deck) => (
+              <SortableDeckItem
+                key={deck.id}
+                deck={deck}
+                handleSelectDeck={handleSelectDeck}
+                handleSendDeck={handleSendDeck}
+                handleRemoveDeck={handleRemoveDeck}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+
+        <DragOverlay>
+          {activeDeck ? (
+            <div className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal">
+              <div className="flex flex-col">
+                <span>{activeDeck.name}</span>
+                <span className="text-xs">
+                  ({activeDeck.cards.length} Tarjetas)
+                </span>
+              </div>
+              <div className="flex justify-center items-center gap-3">
+                <button>
+                  <Send className="w-5 h-5" />
+                </button>
+                <button>
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 }

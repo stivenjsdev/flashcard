@@ -66,6 +66,12 @@ export const decksSlice = createSlice({
       }
       state.value.splice(indexToRemove, 1);
     },
+    updateDeckOrder: (
+      state,
+      action: PayloadAction<{ orderedDeck: Deck[] }>
+    ) => {
+      state.value = action.payload.orderedDeck;
+    },
     // FlashCard Reducers
     addCard: (
       state,
@@ -178,6 +184,7 @@ export const {
   addDeck,
   importDeck,
   removeDeck,
+  updateDeckOrder,
   addCard,
   updateCard,
   removeCard,
