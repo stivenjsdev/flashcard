@@ -14,7 +14,7 @@ type SortableDeckItemProps = {
     e: React.MouseEvent<HTMLButtonElement>,
     deckId: number
   ) => void;
-}
+};
 
 export default function SortableDeckItem({
   deck,
