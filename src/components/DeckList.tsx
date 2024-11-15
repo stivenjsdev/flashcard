@@ -20,7 +20,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
+  arrayMove, // Función para mover elementos dentro de un arreglo
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -30,62 +30,79 @@ import { useNavigate } from "react-router-dom";
 import SortableDeckItem from "./SortableDeckItem";
 
 export default function Component() {
+  // Obtiene el estado global de 'decks' y 'favorites' utilizando selectores personalizados.
   const decks = useAppSelector(selectDecks);
   const favorites = useAppSelector(selectFavorites);
+  // Define el dispatcher para enviar acciones a Redux.
   const dispatch = useAppDispatch();
 
+  // Hook de React Router para redirigir entre rutas.
   const navigate = useNavigate();
+
+  // Estado local para manejar el nombre del nuevo deck.
   const [newDeckName, setNewDeckName] = useState("");
+  // Estado local para manejar el término de búsqueda ingresado.
   const [searchTerm, setSearchTerm] = useState("");
+  // Estado local para almacenar tarjetas coincidentes basadas en la búsqueda.
   const [matchingCards, setMatchingCards] = useState<
     { deckId: number; cards: Card[] }[]
   >([]);
 
+  // Estado local para manejar el ID del elemento que está siendo arrastrado.
   const [activeId, setActiveId] = useState<string | number | null>(null);
+  // Configuración de sensores para el arrastre con mouse y touch.
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: { delay: 500, tolerance: 5 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: 250, tolerance: 5 },
+      activationConstraint: { delay: 250, tolerance: 5 }, // 250ms de retraso y 5px de tolerancia para evitar activación de seleccionador de texto en dispositivos táctiles
     })
   );
 
+  // Memoriza el deck activo que se está arrastrando utilizando el estado 'activeId'.
   const activeDeck = useMemo(
     () => decks.find((deck) => deck.id === activeId),
     [decks, activeId]
   );
 
+  // Efecto que actualiza las tarjetas coincidentes cuando cambian el término de búsqueda o los decks.
   useEffect(() => {
     setMatchingCards([]);
     filterDecks(searchTerm, decks);
   }, [searchTerm, decks]);
 
+  // Maneja el inicio del arrastre, estableciendo el ID activo.
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
   };
 
+  // Maneja el fin del arrastre y actualiza el orden de los decks en el estado global.
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveId(null); // Resetea el id activo después del arrastre
-    const { active, over } = event;
+    const { active, over } = event; // Extrae los objetos arrastrado y sobre el que se suelta
     if (over && active.id !== over.id) {
       const oldIndex = decks.findIndex((deck) => deck.id === active.id);
       const newIndex = decks.findIndex((deck) => deck.id === over.id);
-      const newDecks = arrayMove(decks, oldIndex, newIndex);
+      const newDecks = arrayMove(decks, oldIndex, newIndex); // Reordena los decks.
       dispatch(updateDeckOrder({ orderedDeck: newDecks })); // Actualiza el orden de los decks en el estado
     }
   };
 
+  // Filtra los decks basándose en el término de búsqueda. (se esta utilizando en el useEffect)
   const filterDecks = (term: string, decks: Deck[]) => {
     const filteredDecks = decks.filter((deck) => {
+      // Verifica si el nombre del deck coincide con el término de búsqueda.
       const matchInDeckName = deck.name
         .toLowerCase()
         .includes(term.toLowerCase().trim());
+      // Filtra las tarjetas dentro del deck que coincidan con el término de búsqueda.
       const matchingCardsInDeck = deck.cards.filter(
         (card) =>
           card.question.toLowerCase().includes(term.toLowerCase().trim()) ||
           card.answer.toLowerCase().includes(term.toLowerCase().trim())
       );
+      // Si hay tarjetas coincidentes, se actualiza el estado.
       if (matchingCardsInDeck.length > 0) {
         setMatchingCards((prev) => [
           ...prev,
@@ -94,7 +111,7 @@ export default function Component() {
       }
       return matchInDeckName || matchingCardsInDeck.length > 0;
     });
-    return filteredDecks;
+    return filteredDecks; // Devuelve los decks que coinciden. (actualmente no se esta utilizando)
   };
 
   const handleAddDeck = (event: React.FormEvent<HTMLFormElement>) => {
@@ -105,6 +122,7 @@ export default function Component() {
     }
   };
 
+  // Redirige a la página del deck seleccionado.
   const handleSelectDeck = (deckId: number) => {
     navigate(`/deck/${deckId}`);
   };
@@ -125,11 +143,13 @@ export default function Component() {
     navigate(`/export/${deckId}`);
   };
 
+  // Limpia la lista de decks favoritos.
   const handleClearFavorites = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     dispatch(clearFavorites());
   };
 
+  // Limpia el término de búsqueda y las tarjetas coincidentes.
   const clearSearch = () => {
     setSearchTerm("");
     setMatchingCards([]);
@@ -231,11 +251,15 @@ export default function Component() {
       </h2>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={closestCenter} // Estrategia para detectar colisiones basada en la cercanía al centro del elemento
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={decks} strategy={verticalListSortingStrategy}>
+        {/* Contexto de ordenamiento utilizando una estrategia de lista vertical */}
+        <SortableContext
+          items={decks} // lista de ids, o lista de obj s con una propiedad id
+          strategy={verticalListSortingStrategy}
+        >
           <ul className="space-y-2">
             {decks.map((deck) => (
               <SortableDeckItem
@@ -249,8 +273,11 @@ export default function Component() {
           </ul>
         </SortableContext>
 
+        {/* Superposición que se muestra mientras un elemento está siendo arrastrado */}
         <DragOverlay>
+          {/* Verifica si hay un deck activo durante el arrastre */}
           {activeDeck ? (
+            // Muestra el deck activo en la superposición (con sus mismos estilos)
             <div className="flex justify-between px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer text-tertiary-normal">
               <div className="flex flex-col">
                 <span>{activeDeck.name}</span>
@@ -268,6 +295,7 @@ export default function Component() {
               </div>
             </div>
           ) : null}
+          {/* Si no hay un deck activo, no se muestra nada */}
         </DragOverlay>
       </DndContext>
     </div>
